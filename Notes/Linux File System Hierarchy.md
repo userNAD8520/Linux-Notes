@@ -1,5 +1,5 @@
 # Linux File System Hierarchy 
-[If you don't want to read the bullshit below,  TLDR here](https://www.canva.com/design/DAHAKf1sI78/8ULBPBesSQKXDP_mfxOyDQ/edit?utm_content=DAHAKf1sI78&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton](https://www.canva.com/design/DAHAKf1sI78/8ULBPBesSQKXDP_mfxOyDQ/edit?utm_content=DAHAKf1sI78&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
+[If you don't want to read the Linux Filesystem Hierarchy bullshit below,  TLDR here](https://usernad8520.github.io/Linux-Notes/)
 
 
 The Filesystem Hierarchy Standard
@@ -511,6 +511,7 @@ Make sure you know how to do the following:
 - quit Vim
 - move between different modes so that you can open a file and make basic edits. 
 	- Try not to go to insert mode and do everything in insert mode.
+
 
 
 
