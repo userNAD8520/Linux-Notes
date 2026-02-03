@@ -1,0 +1,810 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Linux Filesystem Hierarchy Tree</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        padding: 40px 20px;
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        padding: 40px;
+      }
+
+      h1 {
+        text-align: center;
+        color: #1e3c72;
+        margin-bottom: 10px;
+        font-size: 2.5em;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .subtitle {
+        text-align: center;
+        color: #666;
+        margin-bottom: 40px;
+        font-size: 1.1em;
+      }
+
+      .legend {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+        margin-bottom: 40px;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 8px;
+      }
+
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        background: white;
+        border-radius: 6px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .legend-color {
+        width: 20px;
+        height: 20px;
+        border-radius: 4px;
+        border: 2px solid rgba(0, 0, 0, 0.2);
+      }
+
+      .tree {
+        font-family: "Courier New", monospace;
+        line-height: 1.8;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        overflow-x: auto;
+      }
+
+      .node {
+        display: flex;
+        align-items: flex-start;
+        margin: 4px 0;
+        transition: all 0.2s;
+      }
+
+      .node:hover {
+        transform: translateX(5px);
+      }
+
+      .node-content {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 6px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .node-content:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      .connector {
+        color: #999;
+        font-weight: bold;
+        margin-right: 8px;
+      }
+
+      .dir-name {
+        font-weight: bold;
+        font-size: 1.05em;
+      }
+
+      .badge {
+        font-size: 0.75em;
+        padding: 3px 8px;
+        border-radius: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .description {
+        color: #000000;
+        font-size: 0.9em;
+        margin-left: 10px;
+        font-family: "Segoe UI", sans-serif;
+      }
+
+      /* Color coding by type */
+      .type-root .node-content {
+        background: linear-gradient(135deg, #667eea 0%, #3a22a396 100%);
+        color: white;
+      }
+      .type-symlink .node-content {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+      }
+      .type-boot .node-content {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        color: white;
+      }
+      .type-device .node-content {
+        background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        color: white;
+      }
+      .type-config .node-content {
+        background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        color: white;
+      }
+      .type-user .node-content {
+        background: linear-gradient(135deg, #30cfd0 0%, #3a22a396 100%);
+        color: white;
+      }
+      .type-mount .node-content {
+        background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+        color: #333;
+      }
+      .type-pseudo .node-content {
+        background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+        color: #333;
+      }
+      .type-temp .node-content {
+        background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+        color: #333;
+      }
+      .type-system .node-content {
+        background: linear-gradient(135deg, #ff6e7f 0%, #bfe9ff 100%);
+        color: white;
+      }
+      .type-data .node-content {
+        background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+        color: white;
+      }
+
+      .indent-1 {
+        margin-left: 20px;
+      }
+      .indent-2 {
+        margin-left: 40px;
+      }
+      .indent-3 {
+        margin-left: 60px;
+      }
+      .indent-4 {
+        margin-left: 80px;
+      }
+
+      .subsection {
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 2px dashed #ddd;
+      }
+
+      .subsection-title {
+        font-size: 1.3em;
+        color: #1e3c72;
+        margin-bottom: 15px;
+        font-weight: bold;
+      }
+
+      /* Expand/Collapse functionality */
+      .expand-icon {
+        display: inline-block;
+        width: 20px;
+        font-weight: bold;
+        cursor: pointer;
+        user-select: none;
+        transition: transform 0.3s ease;
+      }
+
+      .expandable {
+        cursor: pointer;
+      }
+
+      .expandable:hover {
+        opacity: 0.9;
+      }
+
+      .children {
+        overflow: hidden;
+        max-height: 0;
+        opacity: 0;
+        transition:
+          max-height 0.4s ease,
+          opacity 0.3s ease;
+      }
+
+      .children.expanded {
+        max-height: 2000px;
+        opacity: 1;
+      }
+
+      .usage-tips {
+        margin-top: 30px;
+        padding: 25px;
+        background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+        border-radius: 8px;
+        border-left: 4px solid #667eea;
+      }
+
+      .usage-tips h3 {
+        color: #1e3c72;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .usage-tips ul {
+        line-height: 2;
+        color: #555;
+        margin-left: 20px;
+      }
+
+      .usage-tips li {
+        margin-bottom: 8px;
+      }
+
+      .usage-tips strong {
+        color: #667eea;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          padding: 20px;
+        }
+        h1 {
+          font-size: 1.8em;
+        }
+        .legend {
+          gap: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🐧 Linux Filesystem Hierarchy Tree</h1>
+      <p class="subtitle">
+        Complete directory structure with descriptions and categorizations ----
+        Made by Dan Shakya
+      </p>
+
+      <div class="tree">
+        <!-- Root -->
+        <div class="node type-root">
+          <span class="connector"></span>
+          <div class="node-content expandable" data-target="root-children">
+            <span class="expand-icon">▼</span>
+            <span class="dir-name">/</span>
+            <span class="description"
+              >The root directory, start of everything</span
+            >
+          </div>
+        </div>
+
+        <!-- Main directories (children of root) -->
+        <div id="root-children" class="children expanded">
+          <div class="node type-symlink indent-1">
+            <span class="connector">├──</span>
+            <div class="node-content">
+              <span class="dir-name">bin</span>
+              <span class="badge" style="background: #f5576c"
+                >SYMLINK → usr/bin</span
+              >
+              <span class="description"
+                >Executable programs/commands for all users</span
+              >
+            </div>
+          </div>
+
+          <div class="node type-boot indent-1">
+            <span class="connector">├──</span>
+            <div class="node-content">
+              <span class="dir-name">boot</span>
+              <span class="badge" style="background: #00f2fe; color: #333"
+                >BOOT</span
+              >
+              <span class="description">Boot loader files, kernel images</span>
+            </div>
+          </div>
+
+          <div class="node type-device indent-1">
+            <span class="connector">├──</span>
+            <div class="node-content expandable" data-target="dev-children">
+              <span class="expand-icon">▶</span>
+              <span class="dir-name">dev</span>
+              <span class="badge" style="background: #38f9d7; color: #333"
+                >DEVICES</span
+              >
+              <span class="description"
+                >Device files representing hardware</span
+              >
+            </div>
+          </div>
+
+          <!-- /dev subdirectories -->
+          <div id="dev-children" class="children">
+            <div class="node type-device indent-2">
+              <span class="connector">├──</span>
+              <div class="node-content">
+                <span class="dir-name">sda</span>
+                <span class="description">Block device - Disk drives</span>
+              </div>
+            </div>
+
+            <div class="node type-device indent-2">
+              <span class="connector">├──</span>
+              <div class="node-content">
+                <span class="dir-name">tty</span>
+                <span class="description">Character device - Terminals</span>
+              </div>
+            </div>
+
+            <div class="node type-device indent-2">
+              <span class="connector">└──</span>
+              <div class="node-content">
+                <span class="dir-name">null</span>
+                <span class="description"
+                  >Special device - The "bit bucket" (discards all data)</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <div class="node type-config indent-1">
+            <span class="connector">├──</span>
+            <div class="node-content">
+              <span class="dir-name">etc</span>
+              <span class="badge" style="background: #fee140; color: #333"
+                >CONFIG</span
+              >
+              <span class="description">System-wide configuration files</span>
+            </div>
+          </div>
+
+          <div class="node type-user indent-1">
+            <span class="connector">├──</span>
+            <div class="node-content">
+              <span class="dir-name">home</span>
+              <span class="badge" style="background: #330867">USER DATA</span>
+              <span class="description">Regular users' home directories</span>
+            </div>
+          </div>
+
+          <div class="node type-symlink indent-1">
+            <span class="connector">├──</span>
+            <div class="node-content">
+              <span class="dir-name">lib</span>
+              <span class="badge" style="background: #f5576c"
+                >SYMLINK → usr/lib</span
+              >
+              <span class="description"
+                >Shared libraries needed by programs</span
+              >
+            </div>
+          </div>
+
+          <div class="node type-symlink indent-1">
+            <span class="connector">├──</span>
+            <div class="node-content">
+              <span class="dir-name">lib64</span>
+              <span class="badge" style="background: #f5576c"
+                >SYMLINK → usr/lib64</span
+              >
+              <span class="description">64-bit shared libraries</span>
+            </div>
+          </div>
+
+          <div class="node type-temp indent-1">
+            <span class="connector">├──</span>
+            <div class="node-content">
+              <span class="dir-name">lost+found</span>
+              <span class="badge" style="background: #fcb69f; color: #333"
+                >RECOVERY</span
+              >
+              <span class="description"
+                >Recovered files after filesystem check</span
+              >
+            </div>
+          </div>
+
+          <div class="node type-mount indent-1">
+            <span class="connector">├──</span>
+            <div class="node-content">
+              <span class="dir-name">media</span>
+              <span class="badge" style="background: #fed6e3; color: #333"
+                >MOUNT</span
+              >
+              <span class="description"
+                >Removable media mount points (USB, CDs)</span
+              >
+            </div>
+          </div>
+
+          <div class="node type-mount indent-1">
+            <span class="connector">├──</span>
+            <div class="node-content">
+              <span class="dir-name">mnt</span>
+              <span class="badge" style="background: #fed6e3; color: #333"
+                >MOUNT</span
+              >
+              <span class="description">Temporary filesystem mount points</span>
+            </div>
+          </div>
+
+          <div class="node type-system indent-1">
+            <span class="connector">├──</span>
+            <div class="node-content">
+              <span class="dir-name">opt</span>
+              <span class="badge" style="background: #bfe9ff; color: #333"
+                >OPTIONAL</span
+              >
+              <span class="description"
+                >Optional third-party software packages</span
+              >
+            </div>
+          </div>
+
+          <div class="node type-pseudo indent-1">
+            <span class="connector">├──</span>
+            <div class="node-content expandable" data-target="proc-children">
+              <span class="expand-icon">▶</span>
+              <span class="dir-name">proc</span>
+              <span class="badge" style="background: #fecfef; color: #333"
+                >VIRTUAL FS</span
+              >
+              <span class="description"
+                >Virtual filesystem with process & kernel info</span
+              >
+            </div>
+          </div>
+
+          <!-- /proc subdirectories -->
+          <div id="proc-children" class="children">
+            <div class="node type-pseudo indent-2">
+              <span class="connector">├──</span>
+              <div class="node-content">
+                <span class="dir-name">cpuinfo</span>
+                <span class="description">CPU and system information</span>
+              </div>
+            </div>
+
+            <div class="node type-pseudo indent-2">
+              <span class="connector">├──</span>
+              <div class="node-content">
+                <span class="dir-name">meminfo</span>
+                <span class="description">Memory usage information</span>
+              </div>
+            </div>
+
+            <div class="node type-pseudo indent-2">
+              <span class="connector">└──</span>
+              <div class="node-content">
+                <span class="dir-name">[pid]</span>
+                <span class="description"
+                  >Process-specific information directories</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <div class="node type-user indent-1">
+            <span class="connector">├──</span>
+            <div class="node-content">
+              <span class="dir-name">root</span>
+              <span class="badge" style="background: #330867">HOME</span>
+              <span class="description">Root user's home directory</span>
+            </div>
+          </div>
+
+          <div class="node type-pseudo indent-1">
+            <span class="connector">├──</span>
+            <div class="node-content">
+              <span class="dir-name">run</span>
+              <span class="badge" style="background: #fecfef; color: #333"
+                >RUNTIME</span
+              >
+              <span class="description"
+                >Runtime system state since last boot</span
+              >
+            </div>
+          </div>
+
+          <div class="node type-symlink indent-1">
+            <span class="connector">├──</span>
+            <div class="node-content">
+              <span class="dir-name">sbin</span>
+              <span class="badge" style="background: #f5576c"
+                >SYMLINK → usr/sbin</span
+              >
+              <span class="description">System admin executables</span>
+            </div>
+          </div>
+
+          <div class="node type-system indent-1">
+            <span class="connector">├──</span>
+            <div class="node-content">
+              <span class="dir-name">srv</span>
+              <span class="badge" style="background: #bfe9ff; color: #333"
+                >SERVICE DATA</span
+              >
+              <span class="description"
+                >Data for services provided by system</span
+              >
+            </div>
+          </div>
+
+          <div class="node type-pseudo indent-1">
+            <span class="connector">├──</span>
+            <div class="node-content">
+              <span class="dir-name">sys</span>
+              <span class="badge" style="background: #fecfef; color: #333"
+                >VIRTUAL FS</span
+              >
+              <span class="description"
+                >Hardware & device configuration interface</span
+              >
+            </div>
+          </div>
+
+          <div class="node type-temp indent-1">
+            <span class="connector">├──</span>
+            <div class="node-content">
+              <span class="dir-name">tmp</span>
+              <span class="badge" style="background: #fcb69f; color: #333"
+                >TEMPORARY</span
+              >
+              <span class="description"
+                >Temporary files (cleared on reboot)</span
+              >
+            </div>
+          </div>
+
+          <div class="node type-system indent-1">
+            <span class="connector">├──</span>
+            <div class="node-content expandable" data-target="usr-children">
+              <span class="expand-icon">▶</span>
+              <span class="dir-name">usr</span>
+              <span class="badge" style="background: #bfe9ff; color: #333"
+                >SYSTEM RESOURCES</span
+              >
+              <span class="description"
+                >User land software, programs, libraries</span
+              >
+            </div>
+          </div>
+
+          <!-- /usr subdirectories -->
+          <div id="usr-children" class="children">
+            <div class="node type-symlink indent-2">
+              <span class="connector">├──</span>
+              <div class="node-content">
+                <span class="dir-name">bin</span>
+                <span
+                  class="badge"
+                  style="background: #f5576c; font-size: 0.65em"
+                  >SYMLINK</span
+                >
+                <span class="description"
+                  >User executable programs and commands</span
+                >
+              </div>
+            </div>
+
+            <div class="node type-system indent-2">
+              <span class="connector">├──</span>
+              <div class="node-content">
+                <span class="dir-name">include</span>
+                <span class="description"
+                  >Header files for C/C++ development</span
+                >
+              </div>
+            </div>
+
+            <div class="node type-symlink indent-2">
+              <span class="connector">├──</span>
+              <div class="node-content">
+                <span class="dir-name">lib</span>
+                <span
+                  class="badge"
+                  style="background: #f5576c; font-size: 0.65em"
+                  >SYMLINK</span
+                >
+                <span class="description">64-bit shared libraries</span>
+              </div>
+            </div>
+
+            <div class="node type-symlink indent-2">
+              <span class="connector">├──</span>
+              <div class="node-content">
+                <span class="dir-name">sbin</span>
+                <span
+                  class="badge"
+                  style="background: #f5576c; font-size: 0.65em"
+                  >SYMLINK</span
+                >
+                <span class="description"
+                  >System administration executables</span
+                >
+              </div>
+            </div>
+
+            <div class="node type-system indent-2">
+              <span class="connector">├──</span>
+              <div class="node-content">
+                <span class="dir-name">share</span>
+                <span class="description"
+                  >Architecture-independent shared data</span
+                >
+              </div>
+            </div>
+
+            <div class="node type-system indent-2">
+              <span class="connector">└──</span>
+              <div
+                class="node-content expandable"
+                data-target="usr-local-children"
+              >
+                <span class="expand-icon">▶</span>
+                <span class="dir-name">local</span>
+                <span class="description"
+                  >Locally installed software & custom scripts</span
+                >
+              </div>
+            </div>
+
+            <!-- /usr/local subdirectories -->
+            <div id="usr-local-children" class="children">
+              <div class="node type-system indent-3">
+                <span class="connector">└──</span>
+                <div class="node-content">
+                  <span class="dir-name">bin</span>
+                  <span class="description">Locally installed executables</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="node type-data indent-1">
+            <span class="connector">└──</span>
+            <div class="node-content expandable" data-target="var-children">
+              <span class="expand-icon">▶</span>
+              <span class="dir-name">var</span>
+              <span class="badge" style="background: #8ec5fc; color: #333"
+                >VARIABLE DATA</span
+              >
+              <span class="description"
+                >Variable data files (logs, caches, queues)</span
+              >
+            </div>
+          </div>
+
+          <!-- /var subdirectories -->
+          <div id="var-children" class="children">
+            <div class="node type-data indent-2">
+              <span class="connector">├──</span>
+              <div class="node-content">
+                <span class="dir-name">cache</span>
+                <span class="description">Application cache data</span>
+              </div>
+            </div>
+
+            <div class="node type-data indent-2">
+              <span class="connector">├──</span>
+              <div class="node-content">
+                <span class="dir-name">lib</span>
+                <span class="description"
+                  >State information and persistent data</span
+                >
+              </div>
+            </div>
+
+            <div class="node type-data indent-2">
+              <span class="connector">├──</span>
+              <div class="node-content">
+                <span class="dir-name">log</span>
+                <span class="description"
+                  >System and application log files</span
+                >
+              </div>
+            </div>
+
+            <div class="node type-data indent-2">
+              <span class="connector">└──</span>
+              <div class="node-content">
+                <span class="dir-name">spool</span>
+                <span class="description"
+                  >Queued tasks (mail, printing, cron)</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- End of root-children -->
+      </div>
+
+      <div
+        style="
+          margin-top: 30px;
+          padding: 20px;
+          background: #f8f9fa;
+          border-radius: 8px;
+          border-left: 4px solid #1e3c72;
+        "
+      >
+        <h3 style="color: #1e3c72; margin-bottom: 10px">📝 Quick Reference</h3>
+        <ul style="line-height: 1.8; color: #555; margin-left: 20px">
+          <li>
+            <strong>Symlinks:</strong> bin, lib, lib64, sbin point to their /usr
+            equivalents for compatibility
+          </li>
+          <li>
+            <strong>Pseudo Filesystems:</strong> proc, sys, run are generated by
+            the kernel in-memory
+          </li>
+          <li>
+            <strong>User Spaces:</strong> /home for regular users, /root for
+            superuser
+          </li>
+          <li>
+            <strong>Temporary Storage:</strong> /tmp is cleared on reboot, /run
+            contains runtime state
+          </li>
+          <li>
+            <strong>System Configuration:</strong> /etc contains text-based
+            config files (no binaries)
+          </li>
+          <li>
+            <strong>Variable Data:</strong> /var for logs, caches, queues that
+            change during operation
+          </li>
+        </ul>
+      </div>
+    </div>
+    <script>
+      // Add click event listeners to all expandable elements
+      document.addEventListener("DOMContentLoaded", function () {
+        const expandables = document.querySelectorAll(".expandable");
+
+        expandables.forEach((expandable) => {
+          expandable.addEventListener("click", function (e) {
+            e.stopPropagation();
+
+            const targetId = this.getAttribute("data-target");
+            const targetElement = document.getElementById(targetId);
+            const icon = this.querySelector(".expand-icon");
+
+            if (targetElement) {
+              // Toggle the expanded class
+              targetElement.classList.toggle("expanded");
+
+              // Toggle the icon
+              if (targetElement.classList.contains("expanded")) {
+                icon.textContent = "▼";
+              } else {
+                icon.textContent = "▶";
+              }
+            }
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
