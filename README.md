@@ -85,8 +85,8 @@ Yo wassup. These are my notes for Nathan's Linux Class. I know his notes are not
       - `apt autoremove`: Delete unused dependency "leftovers."
   - `~/.bashrc`: For interactive shells (Aliases, Prompts, Functions).
   - `~/.profile`: For login shells (PATH, Environment Variables).
-  - `Aliases`: Text shortcuts. Example: alias gs='git status'.
-  - `Functions`: Shortcuts that handle arguments. Example: mkd() { mkdir -p "$1" && cd "$1"; }.
+  - `Aliases`: Text shortcuts. Example: `alias gs='git status'`.
+  - `Functions`: Shortcuts that handle arguments. Example: `mkd() { mkdir -p "$1" && cd "$1"; }`.
   - **PATH**: List of directories the shell searches for commands.
       - Add to it: `PATH="$HOME/bin:$PATH"`.
   - **Escape Sequences**: `\u` (user), `\h` (host), `\w` (path), `\$` (`$` or `#`).
