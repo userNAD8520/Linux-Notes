@@ -1101,35 +1101,36 @@ apt list --manual-installed
 
 ```
 ┌─────────────────────────────────────────────────────────────┐  
-│                    BASH STARTUP FILES                        │  
+│                    BASH STARTUP FILES                       │  
 ├─────────────────────────────────────────────────────────────┤  
-│                                                              │  
+│                                                             │  
 │  LOGIN SHELL (e.g., SSH)                                    │  
 │  ─────────────────────                                      │  
 │  1. /etc/profile        (system-wide)                       │  
 │  2. ~/.bash_profile  ─┐                                     │  
 │  3. ~/.bash_login    ─┼─ First one found is read            │  
 │  4. ~/.profile       ─┘                                     │  
-│                                                              │  
-│  Put here: Environment variables, PATH                       │  
-│                                                              │  
+│                                                             │  
+│  Put here: Environment variables, PATH                      │  
+│                                                             │  
 ├─────────────────────────────────────────────────────────────┤  
-│                                                              │  
+│                                                             │  
 │  INTERACTIVE NON-LOGIN SHELL (e.g., new terminal tab)       │  
 │  ─────────────────────────────────────────────────────────  │  
-│  ~/.bashrc                                                   │  
-│                                                              │  
+│  ~/.bashrc                                                  │  
+│                                                             │  
 │  Put here: Aliases, functions, prompt (PS1)                 │  
-│                                                              │  
+│                                                             │  
 ├─────────────────────────────────────────────────────────────┤  
-│                                                              │  
+│                                                             │  
 │  PRO TIP: Add this to ~/.bash_profile:                      │  
-│                                                              │  
+│                                                             │  
 │  if [[ -f ~/.bashrc ]]; then                                │  
-│      source ~/.bashrc                                        │  
-│  fi                                                          │  
-│                                                              │  
+│      source ~/.bashrc                                       │  
+│  fi                                                         │  
+│                                                             │  
 │  This ensures aliases work in login shells too!             │  
-│                                                              │  
+│                                                             │  
 └─────────────────────────────────────────────────────────────┘
 ```
+
