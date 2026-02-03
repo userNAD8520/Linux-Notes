@@ -57,18 +57,18 @@ Yo wassup. These are my notes for Nathan's Linux Class. I know his notes are not
 
 ## Week 4
 **Topics Covered:**
-  - `*` (Asterisk): Matches zero or more characters (e.g., `*.csv`).
-  - `?` (Question Mark): Matches exactly one character (e.g., `file?.log`).
-  - `[]` (Square Brackets): Matches one character from a set (e.g., `[a-z].txt`).
-  - `**` (Globstar): Recursive matching through subdirectories (must enable with shopt `-s globstar`).
-  - `cut`: Extracts columns/fields.
+  - **`*` (Asterisk)**: Matches zero or more characters (e.g., `*.csv`).
+  - **`?` (Question Mark)**: Matches exactly one character (e.g., `file?.log`).
+  - **`[]` (Square Brackets)**: Matches one character from a set (e.g., `[a-z].txt`).
+  - **`**` (Globstar)**: Recursive matching through subdirectories (must enable with shopt `-s globstar`).
+  - **`cut`**: Extracts columns/fields.
     - `cut -d',' -f2 file.csv` (Extracts 2nd column of a CSV).
-  - `sed` (Stream Editor): Search and replace text patterns.
+  - **`sed` (Stream Editor)**: Search and replace text patterns.
       - `sed 's/old/new/g' file` (Replace "old" with "new" globally).
       - Use `-i` to save changes directly to the file ("in-place").
-  - `awk`: Advanced data processing language.
+  - **`awk`**: Advanced data processing language.
       - Best for math on columns or complex reports (e.g., calculating averages).
-  - `grep`: The "Find" for text patterns.
+  - **`grep`**: The "Find" for text patterns.
     - `grep "ERROR" log.txt` (Find all error lines).
   - [Notes](./Notes/W4_notes.md)
 
