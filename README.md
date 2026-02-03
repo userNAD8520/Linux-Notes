@@ -70,7 +70,7 @@ Yo wassup. These are my notes for Nathan's Linux Class. I know his notes are not
       - Best for math on columns or complex reports (e.g., calculating averages).
   - `grep`: The "Find" for text patterns.
     - `grep "ERROR" log.txt` (Find all error lines).
-  - [Notes](./Notes/W4_Notes.md)
+  - [Notes](./Notes/W4_notes.md)
 
 ## Week 5
 **Topics Covered:**
