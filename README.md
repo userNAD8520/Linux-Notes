@@ -18,7 +18,7 @@ Yo wassup. These are my notes for Nathan's Linux Class. I know his notes are not
   - **Permissions**: You must chmod 600 your keys or SSH will block the connection.
   - **Known Hosts**: Stores server "fingerprints" to prevent Man-in-the-Middle attacks.
   - **Debug**: Add -vvv to your command to see exactly why a connection failed.
-  - [Notes](./Notes/W1_notes_SSH.md)
+  - [Notes](./Notes/W6_Notes.md)
 
 ## Week 2
 **Topics Covered:**
