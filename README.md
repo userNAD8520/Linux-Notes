@@ -111,4 +111,4 @@ Yo wassup. These are my notes for Nathan's Linux Class. I know his notes are not
 - Loops
   - `for item in $list; do ... done`
   - `while read -r line; do ... done < file.txt`
-  - [Notes](./Notes/W5_Notes.md)
+  - [Notes](./Notes/W6_Notes.md)
