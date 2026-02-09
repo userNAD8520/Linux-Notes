@@ -94,3 +94,21 @@ Yo wassup. These are my notes for Nathan's Linux Class. I know his notes are not
   - **Reset**: Must end with `\[\e[0m\]` to avoid "bleeding" color into commands.
   - **Apply Changes**: Run source `~/.bashrc`.
   - [Notes](./Notes/W5_Notes.md)
+
+## Week 6
+**Topics Covered:**
+- Permissions & Shebang
+  - `#!/usr/bin/env bash`
+  - `chmod u+x <file>`
+- Variables
+  - `var="value"` (No spaces!)
+  - `"$var"` (Always use quotes to expand)
+  - `$1, $2, ...` (Positional arguments)
+  - `$#` (Number of arguments)
+- Conditionals
+  - `[[ -f $file ]]`: True if file exists.
+  - `[[ $status -eq 0 ]]`: True if successful.
+- Loops
+  - `for item in $list; do ... done`
+  - `while read -r line; do ... done < file.txt`
+  - [Notes](./Notes/W5_Notes.md)
