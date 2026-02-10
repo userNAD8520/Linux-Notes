@@ -299,7 +299,7 @@ chmod 000 file.txt  # Even you can't access it anymore!
 
 ## What Is a Shebang and Why Does It Exist?
 
-A **shebang** (also called a hashbang) is a special line at the very beginning of a script file that tells the operating system **which program should run this script**.
+A **shebang** (also called a hashbang) is a special line of code that tells the operating system which interpreter to use when running a script or program.
 
 ### The Problem It Solves
 
