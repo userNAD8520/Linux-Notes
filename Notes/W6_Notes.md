@@ -525,12 +525,12 @@ ruby deploy.rb
 ```bash
 # WRONG - shebang must be first, no blank lines before it
 
-#!/bin/bash
+#!/usr/bin/env bash
 ```
 
 ```bash
 # CORRECT
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Your script starts here
 ```
@@ -539,22 +539,22 @@ ruby deploy.rb
 
 ```bash
 # WRONG - has a space before it
- #!/bin/bash
+ #!/usr/bin/env bash
 ```
 
 ```bash
 # CORRECT
-#!/bin/bash
+#!/usr/bin/env bash
 ```
 
 ### 3. No Extra Spaces After `#!`
 
 ```bash
 # ACCEPTABLE but not recommended
-#! /bin/bash
+#! /usr/bin/env bash
 
 # BEST PRACTICE
-#!/bin/bash
+#!/usr/bin/env bash
 ```
 
 ## Making a Script Executable
@@ -566,7 +566,7 @@ Having a shebang is only half the battle. The file also needs **execute permissi
 ```bash
 # 1. Create the script
 cat > hello.sh << 'EOF'
-#!/bin/bash
+#!/usr/bin/env bash
 echo "Hello, World!"
 EOF
 
@@ -589,7 +589,7 @@ The `./` explicitly tells Bash: "Run the executable file named `hello.sh` in the
 
 ```bash
 # Creating a script
-echo '#!/bin/bash' > script.sh
+echo '#!/usr/bin/env bash' > script.sh
 echo 'echo "Hello"' >> script.sh
 
 # Trying to run it
