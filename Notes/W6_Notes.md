@@ -386,6 +386,7 @@ When you run `./hello.sh`, the kernel essentially does:
 ```
 
 **When to use:** When you want maximum portability across different Unix-like systems
+   - Widely accepted as **best practice**, this method covers the vast majority of use cases—particularly when sharing code or working across different operating systems 
 
 **How it works:**
 
