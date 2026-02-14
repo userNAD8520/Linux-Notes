@@ -1,7 +1,7 @@
 # Linux-Notes
 Yo wassup. These are my notes for Nathan's Linux Class. I know his notes are not the best so these notes provide you with a better understanding of concepts. I took the material from Nathan's notes on GitLab and enhanced it with more examples and more explainations. I'll be updating this as the weeks progress.
 
-## Week 1
+## WEEK 1
 **Topics Covered:**
   - **Kernel vs. Distro: Technically**, Linux is just the kernel (hardware manager). A distro is the full OS package.
   - **The Kernel**: Created by Linus Torvalds; sits between the hardware and your apps.
@@ -9,7 +9,7 @@ Yo wassup. These are my notes for Nathan's Linux Class. I know his notes are not
   - **Forks**: Most distros are built on others (e.g., Mint is a fork of Ubuntu).
   - **Open Source**: Code is public, modifiable, and used everywhere from cars to the Mars Rover.
   - **CLI focus**: In this class, we use the text-based Command Line Interface rather than a GUI.
-  - [Notes](./Notes/W1_Notes_Linux_History.pdf)
+### [Week 1 Notes](./Notes/W1_Notes_Linux_History.pdf)
   --------------------------------------------------------------------
   - **SSH Basics**: Securely control servers and move files without passwords.
   - **Key Pairs**: Private key (stay on your PC) + Public key (upload to server).
@@ -18,9 +18,9 @@ Yo wassup. These are my notes for Nathan's Linux Class. I know his notes are not
   - **Permissions**: You must chmod 600 your keys or SSH will block the connection.
   - **Known Hosts**: Stores server "fingerprints" to prevent Man-in-the-Middle attacks.
   - **Debug**: Add -vvv to your command to see exactly why a connection failed.
-  - [Notes](./Notes/W1_notes_SSH.md)
+### [Week 1 Notes](./Notes/W1_notes_SSH.md)
 
-## Week 2
+## WEEK 2
 **Topics Covered:**
   - **Bash Shell**: Passes commands to the OS. Use help for built-in info.
   - **Processes**: Running programs with unique PIDs. Check status with `ps -ax`.
@@ -30,9 +30,9 @@ Yo wassup. These are my notes for Nathan's Linux Class. I know his notes are not
   - **File Ops**: `cp` (copy), mv (move/rename), `rm -rf` (delete folder - no undo).
   - **Directories**: `mkdir -p` creates nested folders instantly.
   - **Manuals**: Use `man <command>` to see the official docs; press `q` to exit.
-  - [Notes](./Notes/W2_Notes.md)
+### [Week 2 Notes](./Notes/W2_Notes.md)
 
-## Week 3
+## WEEK 3
 **Topics Covered:**
   - **Root** (`/`): The start of everything. No "C: Drive" here; everything is a branch of this tree.
   - **Key Directories**:
@@ -53,9 +53,9 @@ Yo wassup. These are my notes for Nathan's Linux Class. I know his notes are not
     - **Command**: For saving/quitting. Type : then `w` (save) or `q` (quit).
   - **Motions**: Use `h`, `j`, `k`, `l` (left, down, up, right) to stay on the home row.
   - **Composability**: Combine "verbs" and "nouns" (e.g., `dw` = delete word, `dd` = delete line).
-  - [Notes](./Notes/W3_Notes.md)
+ ### [Week 3 Notes](./Notes/W3_Notes.md)
 
-## Week 4
+## WEEK 4
 **Topics Covered:**
   - **`*` (Asterisk)**: Matches zero or more characters (e.g., `*.csv`).
   - **`?` (Question Mark)**: Matches exactly one character (e.g., `file?.log`).
@@ -70,9 +70,9 @@ Yo wassup. These are my notes for Nathan's Linux Class. I know his notes are not
       - Best for math on columns or complex reports (e.g., calculating averages).
   - **`grep`**: The "Find" for text patterns.
     - `grep "ERROR" log.txt` (Find all error lines).
-  - [Notes](./Notes/W4_notes.md)
+### [Week 4 Notes](./Notes/W4_notes.md)
 
-## Week 5
+## WEEK 5
 **Topics Covered:**
   - **Package Manager**: Automates install/update/removal and handles dependencies.
   - **dpkg**: Low-level, local `.deb` files only; no dependency resolution.
@@ -93,9 +93,9 @@ Yo wassup. These are my notes for Nathan's Linux Class. I know his notes are not
   - **Colors**: Uses ANSI codes. Example: `\[\e[31m\]` (Red).
   - **Reset**: Must end with `\[\e[0m\]` to avoid "bleeding" color into commands.
   - **Apply Changes**: Run source `~/.bashrc`.
-  - [Notes](./Notes/W5_Notes.md)
+### [Week 5 Notes](./Notes/W5_Notes.md)
 
-## Week 6
+## WEEK 6
 **Topics Covered:**
 - Permissions & Shebang
   - `#!/usr/bin/env bash`
@@ -111,4 +111,41 @@ Yo wassup. These are my notes for Nathan's Linux Class. I know his notes are not
 - Loops
   - `for item in $list; do ... done`
   - `while read -r line; do ... done < file.txt`
-  - [Notes](./Notes/W6_Notes.md)
+### [Week 6 Notes](./Notes/W6_Notes.md)
+ 
+## WEEK 7
+**Topics Covered:**
+* **Expansions**
+    * `{1..5}` or `{a,b}` (Brace expansion)
+    * `"$var"` (Parameter expansion - **always** quote!)
+    * `$(command)` (Command substitution)
+    * `$(( 1 + 1 ))` (Arithmetic - integers only)
+
+* **Debugging**
+    * `set -x` (Print commands as they run)
+    * `set -e` (Exit immediately on error)
+    * `set -euo pipefail` (Strict "safe mode")
+    * `shellcheck script.sh` (Static analysis tool)
+
+* **Parsing Options (getopts)**
+    * `while getopts "a:b" opt` (Parse flags loop)
+    * `"a:"` (Colons mean the flag needs an argument)
+    * `"$OPTARG"` (Holds the flag's argument value)
+    * `shift $((OPTIND - 1))` (Removes flags after processing)
+
+* **Heredocs**
+    * `cmd << EOF` (Multi-line input block)
+    * `<<-` (Strips leading tabs for indentation)
+    * `<< 'EOF'` (Literal input - no variable expansion)
+
+* **User Input**
+    * `read -p "Prompt" var` (Ask for input inline)
+    * `read -s` (Silent input for passwords)
+    * `while read -r line` (Safely read file line-by-line)
+
+* **Functions**
+    * `name() { ... }` (Function definition)
+    * `local var="val"` (Scope variable to function)
+    * `$1` (First argument passed *to the function*)
+    * `return 1` (Sets exit code only; use `echo` for data)
+### [Week 7 Notes](./Notes/W7_Notes.md)
