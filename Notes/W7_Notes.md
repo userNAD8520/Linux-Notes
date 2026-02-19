@@ -211,9 +211,10 @@ prefix_b="two"
 
 echo ${!prefix_*}   # prints: prefix_a prefix_b
 ```
-
-The `!` before the variable name tells Bash to return the *names* of all variables that start with `prefix_`. This is useful when you have a group of related variables and want to loop through them.
-
+The Anatomy of `${!prefix_*}`:
+- The `!` before the variable name tells Bash to return the *names* of all variables that start with `prefix_`. This is useful when you have a group of related variables and want to loop through them.
+- `prefix_*`: This tells Bash to look for any variable name that begins with "prefix_".
+- `*` (or `@`): The wildcard that instructs Bash to find all matches.
 ### String Slicing
 
 Extract a portion of a string using `${variable:start:length}`:
