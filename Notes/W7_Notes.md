@@ -43,6 +43,16 @@ Bash performs expansions in this exact order. The order matters because one expa
 6. **Word splitting** — splits unquoted results containing spaces into separate words
 7. **Filename expansion (globbing)** — expands wildcard patterns like `*.txt` into actual filenames
 
+A Funny way to remember the order:
+**The PC Builder**
+1. Big (Brace)
+2. Tower (Tilde)
+3. PCs (Parameter)
+4. Cost (Command)
+5. A (Arithmetic)
+6. Whole (Word splitting)
+7. Fortune (Filename)
+
 ---
 
 ## 1.1 Brace Expansion
