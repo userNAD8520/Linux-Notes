@@ -758,7 +758,7 @@ alias gl='git log --oneline'
 
 ### What is PATH?
 
-**PATH** is an environment variable that tells your shell where to look for executable programs.
+**PATH** is an environment variable that tells your shell where to look for executable (`.exe`) programs.
 
 When you type in the command like `ls`, your shell doesn't magically know where the `ls` program is located. It searches through a list of directories - that list is your **PATH**.
 
@@ -1133,4 +1133,5 @@ apt list --manual-installed
 │                                                             │  
 └─────────────────────────────────────────────────────────────┘
 ```
+
 
