@@ -149,3 +149,53 @@ Yo wassup. These are my notes for Nathan's Linux Class. I know his notes are not
     * `$1` (First argument passed *to the function*)
     * `return 1` (Sets exit code only; use `echo` for data)
 ### [Week 7 Notes](./Notes/W7_Notes.md)
+
+## WEEK 9
+
+Here's a bullet point summary of all the notes:
+
+**Core Concepts**
+- Linux is a multi-user OS — every action is performed by a user, and access is controlled through users, groups, permissions, and ownership
+- Every file has one owner (user), one group owner, and permission bits for owner / group / others
+- Permissions are read (`r`), write (`w`), and execute (`x`) — execute on a directory means you can `cd` into it, not "run" it
+
+**Users**
+- Two types: human users (interactive login) and system users (run services, no login)
+- Every user has a UID — Linux uses the number internally, not the username
+- UID 0 = root, UIDs 1–999 = system accounts, UIDs 1000+ = regular users
+- User data is split across `/etc/passwd` (public: username, UID, home dir, shell) and `/etc/shadow` (root-only: encrypted password and expiry info)
+
+**Groups**
+- Groups let multiple users share access to files without opening them up to everyone
+- Every user has one primary group (used when creating new files) and can have many secondary groups
+- Group data is stored in `/etc/group` — field 4 lists secondary members only; primary group is in `/etc/passwd`
+- GIDs follow the same ranges as UIDs (0 = root, 1–999 = system, 1000+ = regular)
+
+**User Management Commands**
+- `useradd -m -s /bin/bash user` — create a human user with a home directory and bash shell
+- `usermod -aG group user` — add a user to a group; **always use `-a`** or you'll overwrite all their groups
+- `userdel -r user` — delete user and home directory; irreversible
+- `passwd user` — set or change a password (accounts are locked until this is done)
+- `id user` — show UID, GID, and all group memberships
+- `su - user` — switch to another user with a full login environment
+- `sudo command` — run one command as root; preferred over `su` because it's logged and scoped to one command
+
+**Group Management Commands**
+- `groupadd developers` — create a group
+- `groupmod -n newname oldname` — rename a group
+- `groupdel developers` — delete a group (can't delete a user's primary group)
+- `gpasswd -a user group` / `gpasswd -d user group` — add or remove a user from a group
+
+**Permissions & Ownership Commands**
+- `chmod u+x file` — symbolic mode; who (`u/g/o/a`) + operator (`+/-/=`) + permission (`r/w/x`)
+- `chmod 750 file` — octal mode; each digit = sum of r(4)+w(2)+x(1) for owner/group/others
+- `chmod -R 750 dir/` — apply recursively
+- `chown user:group file` — change owner and group; use `-R` for recursive
+- `chgrp group file` — change group only
+- `umask 022` — sets default permissions for new files by subtracting from 666 (files) or 777 (dirs); changes are temporary unless saved to `~/.bash_profile`
+
+**How Permission Checking Works**
+- Linux checks in order: owner → group → others, and **stops at the first match**
+- If you're the owner, only owner permissions apply — even if group permissions are more permissive
+- root bypasses all permission checks entirely
+### [Week 9 Notes](./Notes/W9_Notes.md)
