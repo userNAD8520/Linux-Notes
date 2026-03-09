@@ -1,8 +1,4 @@
 
-> **Who this is for:** Linux beginners with little or no prior experience.
-> This guide rewrites and expands course notes into a clear, structured reference you can study and return to.
-
----
 
 ## Table of Contents
 
