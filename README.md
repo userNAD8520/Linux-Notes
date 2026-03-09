@@ -194,8 +194,39 @@ Here's a bullet point summary of all the notes:
 - `chgrp group file` — change group only
 - `umask 022` — sets default permissions for new files by subtracting from 666 (files) or 777 (dirs); changes are temporary unless saved to `~/.bash_profile`
 
+
+### [Week 9 Notes](./Notes/W9_Notes.md)
+
+
+
+
+
+
+---
+
+
+## WEEK 10
+
+**Topics Covered:**
+
+- **Init System**: The first process started by the kernel (PID 1). Coordinates all services, manages boot order, and keeps the system running.
+- **systemd**: The modern Linux init system. Starts services in parallel, handles dependencies automatically, and runs as PID 1.
+- **Units**: The fundamental objects systemd manages. Types include `.service`, `.target`, `.timer`, `.mount`, and `.socket`.
+- **Unit Files**: Plain text config files that tell systemd how to run a resource. System files live in `/usr/lib/systemd/system/`, custom overrides go in `/etc/systemd/system/`.
+- **Service Units**: The most common unit type. Three sections: `[Unit]` (metadata), `[Service]` (how to run), `[Install]` (boot integration).
+- **Dependencies**: `Wants=` is a soft dependency (won't fail if missing), `Requires=` is hard (fails if missing), `After=` controls start order only.
+- **Targets**: Logical system states that group units together. Common ones: `multi-user.target` (server/CLI) and `graphical.target` (desktop).
+- **Boot Chain**: `default.target` → `multi-user.target` → individual services pulled in via `WantedBy=` symlinks.
+- **Starting & Stopping**: Use `systemctl start unit` and `systemctl stop unit` to control services immediately — changes do not persist across reboots.
+- **Enable / Disable**: `systemctl enable unit` creates a symlink so the service starts at boot. `systemctl disable unit` removes it. Neither starts nor stops a running service.
+- **Enable + Now**: `systemctl enable --now unit` starts the service immediately *and* enables it at boot — the most common setup command.
+- **Masking**: `systemctl mask unit` prevents a service from being started by anything. Stronger than disable. Undo with `systemctl unmask unit`.
+- **Status**: `systemctl status unit` shows whether a service is running, its PID, memory usage, and recent logs — first stop for troubleshooting.
+- **Daemon Reload**: Run `systemctl daemon-reload` after editing any unit file, or systemd will ignore your changes.
+- **Exit Status (`$?`)**: After any `systemctl` command, `0` = success, anything else = error.
+
 **How Permission Checking Works**
 - Linux checks in order: owner → group → others, and **stops at the first match**
 - If you're the owner, only owner permissions apply — even if group permissions are more permissive
 - root bypasses all permission checks entirely
-### [Week 9 Notes](./Notes/W9_Notes.md)
+### [Week 10 Notes](./Notes/W10_Notes.md)
