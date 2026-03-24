@@ -225,8 +225,47 @@ Here's a bullet point summary of all the notes:
 - **Daemon Reload**: Run `systemctl daemon-reload` after editing any unit file, or systemd will ignore your changes.
 - **Exit Status (`$?`)**: After any `systemctl` command, `0` = success, anything else = error.
 
+
 **How Permission Checking Works**
 - Linux checks in order: owner → group → others, and **stops at the first match**
 - If you're the owner, only owner permissions apply — even if group permissions are more permissive
 - root bypasses all permission checks entirely
 ### [Week 10 Notes](./Notes/W10_Notes.md)
+
+
+# Week 12
+
+**Topics Covered:**
+
+- **Linux Logging**: The continuous process of recording OS, service, and application events. Used for troubleshooting errors, security auditing (login attempts, `sudo` usage), performance monitoring, and accountability in multi-user systems.
+- **syslog (Legacy)**: The old logging protocol. Stored plain-text files in `/var/log/` (e.g., `/var/log/syslog`). Still present on many systems but largely superseded by `journald`.
+- **systemd-journald**: The modern logging daemon (`journald`). Collects logs from the kernel, initrd, system services (stdout/stderr), and user applications into a single centralized journal stored in a structured binary format.
+- **Binary Format**: Unlike plain text logs, the journal automatically attaches metadata to every entry — UID, GID, PID, unit name, and timestamp. Enables fast indexed searching and supports Forward Secure Sealing (tamper resistance).
+- **Journal Storage**: Two modes — **Volatile** (`/run/log/journal/`, RAM only, lost on reboot) and **Persistent** (`/var/log/journal/`, survives reboots). Default is `auto`: persistent if `/var/log/journal/` exists, volatile otherwise.
+- **journald.conf**: Configuration file at `/etc/systemd/journald.conf`. Key directives: `Storage=` (volatile/persistent/auto/none), `Compress=` (default yes), `SystemMaxUse=` (disk space cap), `ForwardToSyslog=` (bridge to legacy syslog). Apply changes with `sudo systemctl restart systemd-journald`.
+- **journalctl**: The primary tool for reading the binary journal. Supports filtering by boot session (`-b`), time (`--since`, `--until`), priority (`-p`), unit (`-u`), PID (`_PID=`), and UID (`_UID=`). Output formats include `json-pretty` and `verbose`. Live follow with `-f`.
+- **Priority Levels**: Eight severity levels — `0 emerg`, `1 alert`, `2 crit`, `3 err`, `4 warning`, `5 notice`, `6 info`, `7 debug`. Filtering with `-p err` shows that level **and everything more severe**.
+- **systemd Timers**: Unit files (`.timer`) that trigger a paired `.service` file on a schedule. The modern replacement for cron jobs. Fully integrated with `journalctl` for logging. More precise (millisecond resolution) and supports dependencies (e.g., wait for network).
+- **cron vs. systemd Timers**: cron uses a single compact text line, minute-level precision, no dependency handling, and fragmented logging. Timers require two unit files but offer second-level precision, dependency awareness, `Persistent=` for missed runs, and native journal integration.
+- **Timer Unit Files**: Two sections distinguish timers from services — the `.timer` extension and the `[Timer]` section (replaces `[Service]`). If a `.timer` and `.service` share the same base name, systemd links them automatically. Override with `Unit=` in `[Timer]`.
+- **Unit File Locations**: `/usr/lib/systemd/system/` for OS/package-installed units (lower priority). `/etc/systemd/system/` for administrator-created units (higher priority — always use this for your own timers).
+- **Monotonic Timers**: Trigger after a time span relative to an event. Directives: `OnBootSec=` (after boot), `OnUnitActiveSec=` (after last run). Do **not** accumulate time while the machine is off. Best for cleanup tasks and delayed startup jobs.
+- **Realtime Timers**: Trigger at a specific calendar date/time using `OnCalendar=`. Add `Persistent=true` so a missed run (machine was off) fires immediately on next boot. Best for backups, reports, and any human-scheduled task.
+- **OnCalendar= Syntax**: Format is `DayOfWeek Year-Month-Day Hour:Minute:Second`. Wildcards (`*`) match any value. Shorthands available: `daily`, `weekly`, `monthly`, `hourly`, `yearly`. Timezone can be appended (e.g., `OnCalendar=daily UTC`).
+- **Testing Timers**: Use `systemd-analyze calendar "expression"` to preview exactly when a schedule will next fire before deploying it.
+- **Timer systemctl Commands**: `systemctl enable --now my.timer` is the standard setup command (enables at boot + starts immediately). `systemctl list-timers` shows NEXT, LEFT, LAST, PASSED, UNIT, and ACTIVATES for all active timers.
+- **WantedBy=timers.target**: Required in `[Install]` for timers. Tells systemd to activate the timer when the system reaches the stage where scheduled tasks are processed. Without it, `systemctl enable` has no effect.
+- **Daemon Reload**: Run `sudo systemctl daemon-reload` after creating or editing any unit file. systemd reads unit files at startup — without a reload, it will not see your changes.
+
+---
+
+**How journalctl Filtering Works**
+
+- journalctl always filters by **intersection** — every flag you add narrows results further
+- `-p err` means "priority 3 and below (more severe)" — it does **not** mean only exact `err` messages
+- `_UID=` and `_PID=` use the journal's stored metadata fields — more reliable than filtering by username
+- `--no-pager` disables the interactive scroll view — required when using `journalctl` inside scripts
+
+---
+
+### [Week 12 Notes](./Notes/W12_Notes.md)
