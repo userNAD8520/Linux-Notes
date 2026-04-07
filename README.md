@@ -269,3 +269,5 @@ Here's a bullet point summary of all the notes:
 ---
 
 ### [Week 12 Notes](./Notes/W12_Notes.md)
+### [Week 13 Notes](./Notes/W13_Notes.md)
+### [Week 14 Notes](./Notes/W14_Notes.md)
